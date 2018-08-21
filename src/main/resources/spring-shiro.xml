@@ -1,22 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
     <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
         <property name="securityManager" ref="securityManager"/>
+        <!--登录地址-->
         <property name="loginUrl" value="login.html"/>
+        <!--未认证跳转页面-->
         <property name="unauthorizedUrl" value="403.html"/>
         <property name="filterChainDefinitions">
             <value>
                 /login.html = anon
                 /subLogin = anon
+                /testRole1 = roles["admin"]
+                <!--/testPerms = perms["user:delete"]-->
+                /testRole2 = roles["admin",,"admin1"]
+                /testRole3 = rolesOr["admin","admin1"]
                 /* = authc
             </value>
         </property>
+        <!--引入自定义filter-->
+        <property name="filters">
+            <util:map>
+                <entry key="rolesOr" value-ref="rolesOrFilter"/>
+            </util:map>
+        </property>
     </bean>
 
-    <!--创建securityManagerduix对象-->
+    <!--创建自定义的filter-->
+    <bean class="com.shiro.demo.filter.RolesOrFilter" id="rolesOrFilter"/>
+    <!--创建securityManager对象-->
     <bean class="org.apache.shiro.web.mgt.DefaultWebSecurityManager" id="securityManager">
         <!--引入自定义realm-->
         <property name="realm" ref="customRealm"/>
@@ -24,12 +38,22 @@
 
     <!--自定义的realm-->
     <bean class="com.shiro.demo.realm.CustomRealm" id="customRealm">
+        <!--设置加密算法-->
         <property name="credentialsMatcher" ref="credentialsMatcher"/>
     </bean>
 
     <!--加密管理器-->
     <bean class="org.apache.shiro.authc.credential.HashedCredentialsMatcher" id="credentialsMatcher">
+        <!--加密算法-->
         <property name="hashAlgorithmName" value="md5"/>
+        <!--加密次数-->
         <property name="hashIterations" value="1"/>
     </bean>
+
+    <!--开启注解-->
+    <bean class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
+    <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+        <property name="securityManager" ref="securityManager"/>
+    </bean>
+
 </beans>

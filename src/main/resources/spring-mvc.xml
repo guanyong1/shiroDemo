@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"  
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-    xmlns:p="http://www.springframework.org/schema/p"  
-    xmlns:context="http://www.springframework.org/schema/context"  
-    xmlns:mvc="http://www.springframework.org/schema/mvc"  
-    xmlns:aop="http://www.springframework.org/schema/aop"
-    xsi:schemaLocation="http://www.springframework.org/schema/beans    
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
                         http://www.springframework.org/schema/beans/spring-beans-3.1.xsd    
                         http://www.springframework.org/schema/context    
                         http://www.springframework.org/schema/context/spring-context-3.1.xsd    
@@ -26,10 +25,6 @@
        <!--对静态资源文件的访问 -->
        <!-- 这样根目录下面的resource的文件(.css,.js等)就不会被spring的DispatchServlet进行过滤 -->
    		<mvc:default-servlet-handler />
-		 <!-- <mvc:resources mapping="/views/**" location="/views/" />
-		<mvc:resources mapping="/js/**" location="/WEB-INF/js/" /> -->
-
-		<!-- <mvc:resources mapping="/web/**" location="/*" /> -->
 
 		  
     <!--避免IE执行AJAX时，返回JSON出现下载文件 -->  
@@ -58,12 +53,8 @@
         <!-- 内存中的最大值 -->
         <property name="maxInMemorySize" value="40960"></property>
     </bean>
-    <!--<bean id="exceptionResolver" class="com.UMP.platform.interceptor.ExceptionHandler"></bean>-->
-    <!--<bean id="exceptionResolver" class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
-        <property name="exceptionMappings">
-            <props>
-                <prop key="java.lang.Exception">/WEB-INF/404.jsp</prop>
-            </props>
-        </property>
-    </bean>-->
+
+    <!--异常处理，使用log.error打印错误日志-->
+    <bean id="exceptionResolver" class="com.shiro.demo.interceptor.ExceptionHandler"></bean>
+
 </beans>
